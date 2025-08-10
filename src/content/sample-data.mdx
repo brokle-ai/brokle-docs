@@ -1,0 +1,407 @@
+# Sample Data
+
+## Organization Structure
+
+### Sample Organizations
+```json
+{
+  "organizations": [
+    {
+      "id": "org_abc123",
+      "name": "TechCorp AI",
+      "tier": "business",
+      "created_at": "2024-01-15T10:00:00Z",
+      "users": 25,
+      "projects": 8,
+      "monthly_requests": 450000,
+      "quota_limit": 1000000
+    },
+    {
+      "id": "org_def456",
+      "name": "StartupAI",
+      "tier": "pro",
+      "created_at": "2024-03-20T14:30:00Z",
+      "users": 5,
+      "projects": 3,
+      "monthly_requests": 75000,
+      "quota_limit": 100000
+    },
+    {
+      "id": "org_ghi789",
+      "name": "Developer Labs",
+      "tier": "free",
+      "created_at": "2024-06-10T09:15:00Z",
+      "users": 2,
+      "projects": 1,
+      "monthly_requests": 8500,
+      "quota_limit": 10000
+    }
+  ]
+}
+```
+
+### Sample Projects
+```json
+{
+  "projects": [
+    {
+      "id": "proj_ai_chatbot",
+      "name": "Customer Support Chatbot",
+      "organization_id": "org_abc123",
+      "environment": "production",
+      "created_at": "2024-01-20T12:00:00Z",
+      "api_keys": [
+        {
+          "id": "key_prod_abc123",
+          "name": "Production API Key",
+          "last_used": "2024-07-15T08:30:00Z",
+          "requests_count": 125000
+        }
+      ]
+    },
+    {
+      "id": "proj_content_gen",
+      "name": "Content Generation Tool",
+      "organization_id": "org_def456",
+      "environment": "development",
+      "created_at": "2024-04-05T16:20:00Z",
+      "api_keys": [
+        {
+          "id": "key_dev_def456",
+          "name": "Development API Key",
+          "last_used": "2024-07-15T10:15:00Z",
+          "requests_count": 3500
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Analytics Data
+
+### Request Analytics
+```json
+{
+  "analytics": {
+    "time_range": "2024-07-01T00:00:00Z to 2024-07-15T23:59:59Z",
+    "total_requests": 1250000,
+    "total_cost": 2847.50,
+    "avg_latency_ms": 1234,
+    "success_rate": 99.2,
+    "providers": {
+      "openai": {
+        "requests": 750000,
+        "cost": 1825.30,
+        "avg_latency_ms": 1180,
+        "success_rate": 99.5
+      },
+      "anthropic": {
+        "requests": 320000,
+        "cost": 685.40,
+        "success_rate": 98.8,
+        "avg_latency_ms": 1420
+      },
+      "google": {
+        "requests": 180000,
+        "cost": 336.80,
+        "avg_latency_ms": 980,
+        "success_rate": 99.1
+      }
+    }
+  }
+}
+```
+
+### Cost Breakdown
+```json
+{
+  "cost_breakdown": {
+    "period": "July 2024",
+    "total_cost": 2847.50,
+    "by_model": {
+      "gpt-4": {
+        "requests": 45000,
+        "cost": 1240.50,
+        "avg_cost_per_request": 0.0276
+      },
+      "gpt-3.5-turbo": {
+        "requests": 580000,
+        "cost": 892.30,
+        "avg_cost_per_request": 0.0015
+      },
+      "claude-3-sonnet": {
+        "requests": 280000,
+        "cost": 624.20,
+        "avg_cost_per_request": 0.0223
+      },
+      "claude-3-haiku": {
+        "requests": 345000,
+        "cost": 90.50,
+        "avg_cost_per_request": 0.0003
+      }
+    }
+  }
+}
+```
+
+## Routing Decisions
+
+### ML Routing Examples
+```json
+{
+  "routing_decisions": [
+    {
+      "request_id": "req_abc123",
+      "timestamp": "2024-07-15T10:30:00Z",
+      "input": {
+        "model": "gpt-4",
+        "prompt_tokens": 150,
+        "max_tokens": 500,
+        "temperature": 0.7
+      },
+      "decision": {
+        "selected_provider": "openai",
+        "selected_model": "gpt-4-0613",
+        "confidence": 0.92,
+        "factors": {
+          "cost": 0.15,
+          "latency": 0.85,
+          "availability": 0.95,
+          "quality": 0.88
+        },
+        "alternatives": [
+          {
+            "provider": "anthropic",
+            "model": "claude-3-opus",
+            "score": 0.78
+          }
+        ]
+      }
+    },
+    {
+      "request_id": "req_def456",
+      "timestamp": "2024-07-15T10:31:00Z",
+      "input": {
+        "model": "gpt-3.5-turbo",
+        "prompt_tokens": 50,
+        "max_tokens": 200,
+        "temperature": 0.3
+      },
+      "decision": {
+        "selected_provider": "google",
+        "selected_model": "gemini-1.5-flash",
+        "confidence": 0.87,
+        "factors": {
+          "cost": 0.95,
+          "latency": 0.75,
+          "availability": 0.90,
+          "quality": 0.82
+        }
+      }
+    }
+  ]
+}
+```
+
+### Cache Performance
+```json
+{
+  "cache_performance": {
+    "period": "last_7_days",
+    "total_requests": 125000,
+    "cache_hits": 98750,
+    "cache_misses": 26250,
+    "hit_rate": 0.79,
+    "avg_response_time": {
+      "cache_hit": 45,
+      "cache_miss": 1234
+    },
+    "cost_saved": 1245.80,
+    "by_model": {
+      "gpt-4": {
+        "hit_rate": 0.85,
+        "cost_saved": 892.30
+      },
+      "gpt-3.5-turbo": {
+        "hit_rate": 0.82,
+        "cost_saved": 234.50
+      },
+      "claude-3-sonnet": {
+        "hit_rate": 0.74,
+        "cost_saved": 119.00
+      }
+    }
+  }
+}
+```
+
+## User Activity
+
+### Sample Users
+```json
+{
+  "users": [
+    {
+      "id": "user_alice",
+      "name": "Alice Johnson",
+      "email": "alice@techcorp.com",
+      "role": "admin",
+      "organization_id": "org_abc123",
+      "created_at": "2024-01-15T10:00:00Z",
+      "last_login": "2024-07-15T09:30:00Z",
+      "api_requests_count": 45000,
+      "projects": ["proj_ai_chatbot", "proj_analytics_dashboard"]
+    },
+    {
+      "id": "user_bob",
+      "name": "Bob Smith",
+      "email": "bob@startupi.com",
+      "role": "developer",
+      "organization_id": "org_def456",
+      "created_at": "2024-03-20T14:30:00Z",
+      "last_login": "2024-07-15T11:15:00Z",
+      "api_requests_count": 12500,
+      "projects": ["proj_content_gen"]
+    }
+  ]
+}
+```
+
+### Activity Logs
+```json
+{
+  "activity_logs": [
+    {
+      "id": "log_001",
+      "user_id": "user_alice",
+      "action": "api_key_created",
+      "timestamp": "2024-07-15T08:00:00Z",
+      "details": {
+        "key_name": "Production API Key v2",
+        "project_id": "proj_ai_chatbot"
+      }
+    },
+    {
+      "id": "log_002",
+      "user_id": "user_bob",
+      "action": "quota_exceeded",
+      "timestamp": "2024-07-15T10:45:00Z",
+      "details": {
+        "project_id": "proj_content_gen",
+        "quota_limit": 100000,
+        "current_usage": 100001
+      }
+    },
+    {
+      "id": "log_003",
+      "user_id": "user_alice",
+      "action": "model_request",
+      "timestamp": "2024-07-15T11:30:00Z",
+      "details": {
+        "model": "gpt-4",
+        "tokens_used": 1250,
+        "cost": 0.035,
+        "latency_ms": 1180
+      }
+    }
+  ]
+}
+```
+
+## Provider Health
+
+### Provider Status
+```json
+{
+  "provider_health": {
+    "timestamp": "2024-07-15T12:00:00Z",
+    "providers": {
+      "openai": {
+        "status": "healthy",
+        "availability": 0.998,
+        "avg_latency_ms": 1180,
+        "error_rate": 0.002,
+        "models": {
+          "gpt-4": {
+            "status": "healthy",
+            "rate_limit": {
+              "requests_per_minute": 500,
+              "tokens_per_minute": 10000
+            }
+          },
+          "gpt-3.5-turbo": {
+            "status": "healthy",
+            "rate_limit": {
+              "requests_per_minute": 3500,
+              "tokens_per_minute": 90000
+            }
+          }
+        }
+      },
+      "anthropic": {
+        "status": "degraded",
+        "availability": 0.985,
+        "avg_latency_ms": 1420,
+        "error_rate": 0.015,
+        "models": {
+          "claude-3-opus": {
+            "status": "degraded",
+            "rate_limit": {
+              "requests_per_minute": 200,
+              "tokens_per_minute": 8000
+            }
+          }
+        }
+      },
+      "google": {
+        "status": "healthy",
+        "availability": 0.995,
+        "avg_latency_ms": 980,
+        "error_rate": 0.005,
+        "models": {
+          "gemini-1.5-pro": {
+            "status": "healthy",
+            "rate_limit": {
+              "requests_per_minute": 300,
+              "tokens_per_minute": 12000
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## Billing Data
+
+### Invoice Example
+```json
+{
+  "invoice": {
+    "id": "inv_202407_abc123",
+    "organization_id": "org_abc123",
+    "period": {
+      "start": "2024-07-01T00:00:00Z",
+      "end": "2024-07-31T23:59:59Z"
+    },
+    "subscription": {
+      "tier": "business",
+      "base_cost": 99.00
+    },
+    "usage": {
+      "requests": 875000,
+      "overage_cost": 125.50,
+      "total_cost": 224.50
+    },
+    "breakdown": {
+      "base_subscription": 99.00,
+      "overage_requests": 125.50,
+      "total": 224.50
+    },
+    "due_date": "2024-08-15T00:00:00Z",
+    "status": "paid"
+  }
+}
+```

@@ -1,0 +1,364 @@
+# SDK Examples
+
+## Python SDK
+
+### Installation
+```bash
+pip install brokle-ai
+```
+
+### Basic Usage
+```python
+from brokle_ai import BrokleAI
+
+# Initialize client
+client = BrokleAI(api_key="your-api-key-here")
+
+# Simple chat completion
+response = client.chat.completions.create(
+    model="gpt-4",
+    messages=[
+        {"role": "user", "content": "What is machine learning?"}
+    ]
+)
+
+print(response.choices[0].message.content)
+```
+
+### Async Usage
+```python
+import asyncio
+from brokle_ai import AsyncBrokleAI
+
+async def main():
+    client = AsyncBrokleAI(api_key="your-api-key-here")
+    
+    response = await client.chat.completions.create(
+        model="claude-3-sonnet",
+        messages=[
+            {"role": "user", "content": "Explain async programming"}
+        ]
+    )
+    
+    print(response.choices[0].message.content)
+    await client.close()
+
+asyncio.run(main())
+```
+
+### Streaming Responses
+```python
+from brokle_ai import BrokleAI
+
+client = BrokleAI(api_key="your-api-key-here")
+
+stream = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": "Write a poem about the ocean"}
+    ],
+    stream=True
+)
+
+for chunk in stream:
+    if chunk.choices[0].delta.content is not None:
+        print(chunk.choices[0].delta.content, end="")
+```
+
+### Error Handling
+```python
+from brokle_ai import BrokleAI
+from brokle_ai.exceptions import RateLimitError, InvalidAPIKeyError
+
+client = BrokleAI(api_key="your-api-key-here")
+
+try:
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "user", "content": "Hello!"}
+        ]
+    )
+except RateLimitError as e:
+    print(f"Rate limit exceeded: {e}")
+    print(f"Retry after: {e.retry_after} seconds")
+except InvalidAPIKeyError as e:
+    print(f"Invalid API key: {e}")
+except Exception as e:
+    print(f"Unexpected error: {e}")
+```
+
+## JavaScript SDK
+
+### Installation
+```bash
+npm install brokle-ai
+```
+
+### Basic Usage
+```javascript
+import { BrokleAI } from 'brokle-ai';
+
+const client = new BrokleAI({
+  apiKey: 'your-api-key-here'
+});
+
+const response = await client.chat.completions.create({
+  model: 'gpt-4',
+  messages: [
+    { role: 'user', content: 'What is JavaScript?' }
+  ]
+});
+
+console.log(response.choices[0].message.content);
+```
+
+### Streaming in Node.js
+```javascript
+import { BrokleAI } from 'brokle-ai';
+
+const client = new BrokleAI({
+  apiKey: 'your-api-key-here'
+});
+
+const stream = await client.chat.completions.create({
+  model: 'gpt-3.5-turbo',
+  messages: [
+    { role: 'user', content: 'Tell me a story' }
+  ],
+  stream: true
+});
+
+for await (const chunk of stream) {
+  if (chunk.choices[0].delta.content) {
+    process.stdout.write(chunk.choices[0].delta.content);
+  }
+}
+```
+
+### React Integration
+```jsx
+import React, { useState } from 'react';
+import { BrokleAI } from 'brokle-ai';
+
+const ChatComponent = () => {
+  const [message, setMessage] = useState('');
+  const [response, setResponse] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const client = new BrokleAI({
+    apiKey: process.env.REACT_APP_BROKLE_API_KEY
+  });
+
+  const sendMessage = async () => {
+    setLoading(true);
+    try {
+      const result = await client.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          { role: 'user', content: message }
+        ]
+      });
+      setResponse(result.choices[0].message.content);
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <input
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="Type your message..."
+      />
+      <button onClick={sendMessage} disabled={loading}>
+        {loading ? 'Sending...' : 'Send'}
+      </button>
+      <div>{response}</div>
+    </div>
+  );
+};
+```
+
+## Go SDK
+
+### Installation
+```bash
+go get github.com/brokle-ai/brokle-go
+```
+
+### Basic Usage
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "log"
+    
+    "github.com/brokle-ai/brokle-go"
+)
+
+func main() {
+    client := brokle.NewClient("your-api-key-here")
+    
+    resp, err := client.Chat.Completions.Create(context.Background(), &brokle.ChatCompletionRequest{
+        Model: "gpt-4",
+        Messages: []brokle.ChatMessage{
+            {
+                Role:    "user",
+                Content: "What is Go programming language?",
+            },
+        },
+    })
+    
+    if err != nil {
+        log.Fatal(err)
+    }
+    
+    fmt.Println(resp.Choices[0].Message.Content)
+}
+```
+
+### Streaming in Go
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "log"
+    
+    "github.com/brokle-ai/brokle-go"
+)
+
+func main() {
+    client := brokle.NewClient("your-api-key-here")
+    
+    stream, err := client.Chat.Completions.CreateStream(context.Background(), &brokle.ChatCompletionRequest{
+        Model: "gpt-3.5-turbo",
+        Messages: []brokle.ChatMessage{
+            {
+                Role:    "user",
+                Content: "Write a function to reverse a string in Go",
+            },
+        },
+        Stream: true,
+    })
+    
+    if err != nil {
+        log.Fatal(err)
+    }
+    
+    defer stream.Close()
+    
+    for {
+        chunk, err := stream.Next()
+        if err != nil {
+            if err == brokle.ErrStreamDone {
+                break
+            }
+            log.Fatal(err)
+        }
+        
+        if len(chunk.Choices) > 0 && chunk.Choices[0].Delta.Content != "" {
+            fmt.Print(chunk.Choices[0].Delta.Content)
+        }
+    }
+}
+```
+
+### Error Handling in Go
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "log"
+    
+    "github.com/brokle-ai/brokle-go"
+)
+
+func main() {
+    client := brokle.NewClient("your-api-key-here")
+    
+    resp, err := client.Chat.Completions.Create(context.Background(), &brokle.ChatCompletionRequest{
+        Model: "gpt-4",
+        Messages: []brokle.ChatMessage{
+            {
+                Role:    "user",
+                Content: "Hello!",
+            },
+        },
+    })
+    
+    if err != nil {
+        switch e := err.(type) {
+        case *brokle.RateLimitError:
+            fmt.Printf("Rate limit exceeded, retry after %d seconds\n", e.RetryAfter)
+        case *brokle.InvalidAPIKeyError:
+            fmt.Printf("Invalid API key: %s\n", e.Message)
+        case *brokle.ModelNotFoundError:
+            fmt.Printf("Model not found: %s\n", e.Message)
+        default:
+            log.Fatal(err)
+        }
+        return
+    }
+    
+    fmt.Println(resp.Choices[0].Message.Content)
+}
+```
+
+## Configuration Examples
+
+### Environment Variables
+```bash
+# .env file
+BROKLE_API_KEY=your-api-key-here
+BROKLE_BASE_URL=https://api.brokle.ai
+BROKLE_TIMEOUT=30
+BROKLE_MAX_RETRIES=3
+```
+
+### Custom Configuration
+```python
+from brokle_ai import BrokleAI
+
+client = BrokleAI(
+    api_key="your-api-key-here",
+    base_url="https://api.brokle.ai",
+    timeout=30,
+    max_retries=3,
+    organization="org-123456",
+    project="proj-abc789"
+)
+```
+
+### Middleware Example
+```javascript
+import { BrokleAI } from 'brokle-ai';
+
+const client = new BrokleAI({
+  apiKey: 'your-api-key-here',
+  middleware: [
+    // Request logging
+    (req, next) => {
+      console.log('Request:', req.method, req.url);
+      return next(req);
+    },
+    // Response timing
+    async (req, next) => {
+      const start = Date.now();
+      const response = await next(req);
+      const duration = Date.now() - start;
+      console.log(`Response time: ${duration}ms`);
+      return response;
+    }
+  ]
+});
+```

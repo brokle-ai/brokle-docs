@@ -1,0 +1,265 @@
+# API Examples
+
+## Authentication
+
+### API Key Authentication
+```bash
+curl -X POST "https://api.brokle.ai/v1/chat/completions" \
+  -H "Authorization: Bearer your-api-key-here" \
+  -H "Content-Type: application/json"
+```
+
+### JWT Token Authentication
+```bash
+curl -X POST "https://api.brokle.ai/v1/chat/completions" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json"
+```
+
+## Chat Completions
+
+### Basic Chat Request
+```json
+{
+  "model": "gpt-4",
+  "messages": [
+    {
+      "role": "user",
+      "content": "What is the capital of France?"
+    }
+  ],
+  "max_tokens": 150,
+  "temperature": 0.7
+}
+```
+
+### Response
+```json
+{
+  "id": "chatcmpl-9vN8mPjX3YfEkOhLqCQhJa0z9K8bF",
+  "object": "chat.completion",
+  "created": 1736965234,
+  "model": "gpt-4",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "The capital of France is Paris."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 13,
+    "completion_tokens": 7,
+    "total_tokens": 20
+  },
+  "routing": {
+    "provider": "openai",
+    "model": "gpt-4",
+    "latency_ms": 1234,
+    "cost_usd": 0.00042
+  }
+}
+```
+
+### Advanced Chat with System Prompt
+```json
+{
+  "model": "claude-3-sonnet",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful AI assistant specialized in software development."
+    },
+    {
+      "role": "user",
+      "content": "How do I implement rate limiting in a REST API?"
+    }
+  ],
+  "max_tokens": 500,
+  "temperature": 0.3,
+  "stream": false
+}
+```
+
+## Streaming Responses
+
+### Streaming Request
+```json
+{
+  "model": "gpt-3.5-turbo",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Write a short story about a robot learning to paint."
+    }
+  ],
+  "max_tokens": 300,
+  "temperature": 0.8,
+  "stream": true
+}
+```
+
+### Streaming Response (Server-Sent Events)
+```
+data: {"id":"chatcmpl-9vN8mPjX3YfEkOhLqCQhJa0z9K8bF","object":"chat.completion.chunk","created":1736965234,"model":"gpt-3.5-turbo","choices":[{"delta":{"role":"assistant","content":""},"index":0,"finish_reason":null}]}
+
+data: {"id":"chatcmpl-9vN8mPjX3YfEkOhLqCQhJa0z9K8bF","object":"chat.completion.chunk","created":1736965234,"model":"gpt-3.5-turbo","choices":[{"delta":{"content":"In"},"index":0,"finish_reason":null}]}
+
+data: {"id":"chatcmpl-9vN8mPjX3YfEkOhLqCQhJa0z9K8bF","object":"chat.completion.chunk","created":1736965234,"model":"gpt-3.5-turbo","choices":[{"delta":{"content":" a"},"index":0,"finish_reason":null}]}
+
+data: [DONE]
+```
+
+## Provider-Specific Features
+
+### OpenAI Function Calling
+```json
+{
+  "model": "gpt-4",
+  "messages": [
+    {
+      "role": "user",
+      "content": "What's the weather like in San Francisco?"
+    }
+  ],
+  "functions": [
+    {
+      "name": "get_weather",
+      "description": "Get the current weather in a given location",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "The city and state, e.g. San Francisco, CA"
+          }
+        },
+        "required": ["location"]
+      }
+    }
+  ]
+}
+```
+
+### Anthropic Claude with System Message
+```json
+{
+  "model": "claude-3-opus",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are Claude, an AI assistant created by Anthropic."
+    },
+    {
+      "role": "user",
+      "content": "Explain quantum computing in simple terms."
+    }
+  ],
+  "max_tokens": 400,
+  "temperature": 0.5
+}
+```
+
+## Error Responses
+
+### Rate Limit Exceeded
+```json
+{
+  "error": {
+    "type": "rate_limit_exceeded",
+    "message": "Rate limit exceeded. Please try again later.",
+    "code": "rate_limit_exceeded",
+    "param": null,
+    "details": {
+      "retry_after": 60,
+      "limit": 1000,
+      "remaining": 0,
+      "reset": 1736965294
+    }
+  }
+}
+```
+
+### Invalid API Key
+```json
+{
+  "error": {
+    "type": "invalid_api_key",
+    "message": "Invalid API key provided",
+    "code": "invalid_api_key",
+    "param": null
+  }
+}
+```
+
+### Model Not Found
+```json
+{
+  "error": {
+    "type": "model_not_found",
+    "message": "Model 'gpt-5' not found",
+    "code": "model_not_found",
+    "param": "model"
+  }
+}
+```
+
+## Analytics and Metrics
+
+### Request with Custom Metadata
+```json
+{
+  "model": "gpt-4",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Translate 'Hello, world!' to Spanish."
+    }
+  ],
+  "metadata": {
+    "user_id": "user_123",
+    "session_id": "session_abc789",
+    "application": "translation_app",
+    "version": "1.2.0"
+  }
+}
+```
+
+### Response with Analytics
+```json
+{
+  "id": "chatcmpl-9vN8mPjX3YfEkOhLqCQhJa0z9K8bF",
+  "object": "chat.completion",
+  "created": 1736965234,
+  "model": "gpt-4",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "¡Hola, mundo!"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 15,
+    "completion_tokens": 4,
+    "total_tokens": 19
+  },
+  "analytics": {
+    "provider": "openai",
+    "provider_model": "gpt-4-0613",
+    "latency_ms": 892,
+    "cost_usd": 0.00038,
+    "cache_hit": false,
+    "routing_decision": {
+      "factors": ["cost", "latency", "availability"],
+      "score": 0.85
+    }
+  }
+}
+```
